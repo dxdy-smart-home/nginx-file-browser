@@ -1,0 +1,38 @@
+{
+  "name": "nginx-file-browser",
+  "version": "1.0.0",
+  "description": "This web application is a very simple file browser which can be used effectively together with [nginx's autoindex module](http://nginx.org/en/docs/http/ngx_http_autoindex_module.html).",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^3.2.4"
+  },
+  "devDependencies": {
+    "css-loader": "^6.7.1",
+    "css-minimizer-webpack-plugin": "^3.4.1",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "style-loader": "^3.3.1",
+    "vue": "^3.2.33",
+    "vue-loader": "^17.0.0",
+    "vue-template-compiler": "^2.6.14",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
+  },
+  "scripts": {
+    "build": "npx webpack --mode=production",
+    "dev-server": "npx webpack serve --mode=development",
+    "nginx": "docker run -p 8080:80 -v PWD:/opt/www/files/ -v PWD:/opt/www/file-browser/ mohamnag/nginx-file-browser:0.0.1",
+    "build_nginx": "docker build . --tag mohamnag/nginx-file-browser:0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dxdy-smart-home/nginx-file-browser.git"
+  },
+  "author": "dxdy@bk.ru",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dxdy-smart-home/nginx-file-browser/issues"
+  },
+  "homepage": "https://github.com/dxdy-smart-home/nginx-file-browser#readme"
+}
