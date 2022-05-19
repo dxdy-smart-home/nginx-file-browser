@@ -22,7 +22,7 @@
   "scripts": {
     "build": "npx webpack --mode=production",
     "dev-server": "npx webpack serve --mode=development",
-    "nginx": "docker run -p 8080:80 -v PWD:/opt/www/files/ -v PWD:/opt/www/file-browser/ mohamnag/nginx-file-browser:0.0.1",
+    "nginx": "docker run -p 8080:80 -v ${PWD}/assets:/opt/www/files/ -v PWD:/opt/www/file-browser/ mohamnag/nginx-file-browser:0.0.1",
     "build_nginx": "docker build . --tag mohamnag/nginx-file-browser:0.0.1"
   },
   "repository": {

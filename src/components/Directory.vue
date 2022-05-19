@@ -9,6 +9,7 @@
 
   export default {
     props: { item: Object, currentPath: String },
+    emits: ['navigateTo'],
     methods: {
       async onClick(event) {
         event.preventDefault();

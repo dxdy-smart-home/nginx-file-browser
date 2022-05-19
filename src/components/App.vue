@@ -1,45 +1,33 @@
 <template>
   <div id="app">
-    <ul class="item-list">
-      <component v-for="item in items"
-          :item="item"
-          :currentPath="currentPath"
-          :key="item.name"
-          @navigateTo="navigateTo"
-          v-bind:is="item.component"
-      />
-    </ul>
+    <ErrorPage v-if="error" :error="error" />
+    <Items v-else :items="items" :currentPath="currentPath" @navigateTo="navigateTo" />
   </div>
 </template>
 
 <script>
-  import {doApiIndexPath} from '../helpers/url.js';
+  import {doApiIndexPath, getPathFromBrowser} from '../helpers/url.js';
   import {getParentDir} from '../helpers/fileSystem.js';
 
-  import { markRaw } from "vue";
-  import Item from './Item.vue'
-  import FileItem from './File.vue'
-  import DirectoryItem from './Directory.vue'
-  import ParentItem from './Parent.vue'
+  import Items from "./Items.vue"
+  import ErrorPage from './ErrorPage.vue'
 
   export default {
+    components: { Items, ErrorPage },
     data() {
-      var requestedPath = window.location.hash;
-      var startPath = requestedPath ? requestedPath.substr(1) : "/";
-
-      return { items: [], currentPath: startPath };
-    },
-    components: {
-      Item
+      return { items: [], currentPath: getPathFromBrowser(), error: null }
     },
     created() { this.navigateTo(this.currentPath); },
     methods: {
-      async navigateTo(path) {
+      async fetchItems(path) {
         var apiPath = doApiIndexPath(path);
-        const response = await fetch(apiPath);
-        var items = await response.json();
 
-        this.currentPath = path;
+        const response = await fetch(apiPath);
+        if (!response.ok) {
+          throw new Error(`Server error ${response.status}`);
+        }
+
+        var items = await response.json();
 
         const parentDir = getParentDir(path);
         if(parentDir) {
@@ -47,38 +35,32 @@
           items = [parentItem].concat(items);
         }
 
-        this.items = items.map((item) => {
-          item.component = this.findItemComponentByName(item.type)
-          return item;
-        });
-
-        history.replaceState(null, path, '#' + path);
+        return items;
       },
-      findItemComponentByName(name) {
-        var foundComponent = null;
 
-        switch(name) {
-          case 'directory': foundComponent = DirectoryItem; break;
-          case 'parent': foundComponent = ParentItem; break;
-          default: foundComponent = FileItem; break;
+      async navigateTo(path) {
+        try {
+          this.items = await this.fetchItems(path);
+
+          this.error = null;
+          this.currentPath = path;
+          history.replaceState(null, path, '#' + path);
+
+        } catch(error) {
+          this.error = error.message
+          this.items = [];
         }
-
-        return markRaw(foundComponent);
       }
     }
-  };
+  }
 </script>
 
 <style>
 body > .container:first-child {
-    margin: 3rem auto 0;
+  margin: 3rem auto 0;
 }
 
 a {
-    text-decoration: none;
-}
-
-.item-list {
-    list-style: none;
+  text-decoration: none;
 }
 </style>
