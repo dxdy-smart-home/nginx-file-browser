@@ -1,6 +1,6 @@
 {
   "name": "nginx-file-browser",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "This web application is a very simple file browser which can be used effectively together with [nginx's autoindex module](http://nginx.org/en/docs/http/ngx_http_autoindex_module.html).",
   "main": "index.js",
   "dependencies": {
@@ -22,8 +22,8 @@
   "scripts": {
     "build": "npx webpack --mode=production",
     "dev-server": "npx webpack serve --mode=development",
-    "nginx": "docker run -p 8080:80 -v ${PWD}/test/fixtures:/opt/www/files/ -v PWD:/opt/www/file-browser/ mohamnag/nginx-file-browser:0.0.1",
-    "build_nginx": "docker build . --tag mohamnag/nginx-file-browser:0.0.1"
+    "nginx": "docker run -p 8080:80 -v ${PWD}/test/fixtures:/opt/www/files/  mrdxdy/nginx-file-browser:0.1.0",
+    "auth_nginx": "docker run -p 8080:80 -v ${PWD}/test/fixtures:/opt/www/files/ -v ${PWD}/test/includes:/etc/nginx/includes  mrdxdy/nginx-file-browser:0.1.0"
   },
   "repository": {
     "type": "git",
