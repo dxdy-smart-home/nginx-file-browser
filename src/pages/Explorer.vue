@@ -1,21 +1,19 @@
 <template>
-  <div id="app">
-    <ErrorPage v-if="error" :error="error" />
-    <Items v-else :items="items" :currentPath="currentPath" @navigateTo="navigateTo" />
-  </div>
+  <Items :items="items" :currentPath="currentPath" @navigateTo="navigateTo" />
 </template>
 
 <script>
-  import {doApiIndexPath, getPathFromBrowser} from '../helpers/url.js';
+  import {doApiIndexPath} from '../helpers/url.js';
   import {getParentDir} from '../helpers/fileSystem.js';
+  import VirtualURL from '../lib/VirtualUrl.js';
 
-  import Items from "./Items.vue"
-  import ErrorPage from './ErrorPage.vue'
+  import Items from "../components/Items.vue"
 
   export default {
-    components: { Items, ErrorPage },
+    components: { Items },
     data() {
-      return { items: [], currentPath: getPathFromBrowser(), error: null }
+      var url = VirtualURL.current();
+      return { items: [], currentPath: url.pathname, error: null }
     },
     created() { this.navigateTo(this.currentPath); },
     methods: {
@@ -44,11 +42,13 @@
 
           this.error = null;
           this.currentPath = path;
-          history.replaceState(null, path, '#' + path);
+          history.replaceState(null, path, `#${path}`);
 
         } catch(error) {
-          this.error = error.message
-          this.items = [];
+          const params = new URLSearchParams();
+          params.set('error', error.message);
+
+          VirtualURL.redirectTo('/error-page', params);
         }
       }
     }

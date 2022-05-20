@@ -19,8 +19,3 @@ export function doApiIndexPath(path) {
 export function concatPath(endpoint, path) {
   return isAutoIndexPath(endpoint) ? endpoint + path : [endpoint, path].join('/')
 }
-
-export function getPathFromBrowser() {
-  var requestedPath = window.location.hash;
-  return requestedPath ? requestedPath.substr(1) : "/";
-}

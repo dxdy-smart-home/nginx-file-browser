@@ -5,8 +5,15 @@
 </template>
 
 <script>
+  import VirtualURL from '../lib/VirtualUrl.js';
+
   export default {
-    props: { error: String }
+    data() {
+      var url = VirtualURL.current();
+      var error = url.searchParams.get('error') || 'Неизвестная ошибка';
+
+      return { error: error };
+    }
   }
 </script>
 
